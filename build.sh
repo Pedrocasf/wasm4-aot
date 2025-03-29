@@ -89,7 +89,7 @@ w2c2)
 	cd w2c2
 	make
 	cd ..
-	./w2c2/w2c2 -o cart/cart.c "$CARTRIDGE"
+	w2c2 "$CARTRIDGE" cart/cart.c
 	;;
 esac
 

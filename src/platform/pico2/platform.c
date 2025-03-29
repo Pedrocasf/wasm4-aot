@@ -243,6 +243,8 @@ void platform_draw(void) {
     draw_buffer = !draw_buffer;
     queue_add_blocking(&call_queue, &entry);
 }
+/*
 void* platform_init_alloc(uint32_t len){
     return malloc(len);
 }
+*/

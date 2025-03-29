@@ -8,6 +8,7 @@
 #if !(defined(__NeXT__) || (defined(_MSC_VER) && _MSC_VER <= 1000))
 #include <stdint.h>
 #endif
+#include "platform_shim.h"
 
 #include <assert.h>
 
@@ -677,7 +678,7 @@ typedef struct wasmMemory {
     WASM_MUTEX_TYPE mutex;
 #endif
 } wasmMemory;
-
+extern U8* w4_memory_raw;
 #define WASM_PAGE_SIZE 65536
 
 static
@@ -886,7 +887,7 @@ load_data(
 #define DEFINE_LOAD(name, t1, t2, t3)                       \
     static W2C2_INLINE t3 name(wasmMemory* mem, U64 addr) { \
         t1 result;                                          \
-        memcpy(&result, &mem->data[addr], sizeof(t1));      \
+        memcpy(&result, w4_memory_raw + addr, sizeof(t1));      \
         return (t3)(t2)result;                              \
     }
 
@@ -953,7 +954,7 @@ load_data(
 #define DEFINE_STORE(name, t1, t2)                                      \
     static W2C2_INLINE void name(wasmMemory* mem, U64 addr, t2 value) { \
         t1 wrapped = (t1)value;                                         \
-        memcpy(&mem->data[addr], &wrapped, sizeof(t1));                 \
+        memcpy(w4_memory_raw + addr, &wrapped, sizeof(t1));                 \
     }
 
 /* DEFINE_STORE8 */

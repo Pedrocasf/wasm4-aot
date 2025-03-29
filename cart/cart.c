@@ -1,5 +1,5 @@
 #include "w2c2_base.h"
-
+#include <stdio.h>
 #include "cart.h"
 
 const U8 d0[]={
@@ -716,6 +716,7 @@ return si0;
 }
 
 void f4(cartInstance*i,U32 l0) {
+fprintf(stderr, "f4 here1\n");
 U32 l1=0;
 U32 l2=0;
 U32 l3=0;
@@ -759,6 +760,7 @@ goto L2;
 L5:;
 si0=l1;
 si1=l0;
+fprintf(stderr, "f4 here2\n");
 si1=i32_load(i->env__memory,(U64)si1+12U);
 si0=si0 >= si1;
 if(si0){
@@ -1502,6 +1504,7 @@ L0:;
 }
 
 U32 f5(cartInstance*i,U32 l0,U32 l1) {
+fprintf(stderr, "f5 here1\n");
 U32 l2=0;
 U32 si0,si1,si2,si3;
 si0=l1;
@@ -1510,10 +1513,12 @@ si0=(U32)((I32)si0>(I32)si1);
 if(si0){
 si0=l0;
 si0=!(si0);
+fprintf(stderr, "f5 here2\n");
 if(si0){
 goto L1;
 }
 si0=l0;
+
 si0=i32_load(i->env__memory,(U64)si0+4U);
 si0=!(si0);
 if(si0){
@@ -6041,6 +6046,7 @@ l0=si0;
 i->g0=si0;
 si0=l0;
 sj1=W2C2_LL(60129542144U);
+fprintf(stderr, "here0\n");
 i64_store(i->env__memory,(U64)si0+32U,sj1);
 si0=l0;
 sj1=W2C2_LL(0U);
@@ -6119,6 +6125,7 @@ i32_store(i->env__memory,(U64)si0,si1);
 si0=l0;
 si1=l6;
 i32_store(i->env__memory,(U64)si0+56U,si1);
+fprintf(stderr, "here1\n");
 si0=4U;
 si0=f10(i,si0);
 l7=si0;
@@ -6144,6 +6151,7 @@ i32_store(i->env__memory,(U64)si0,si1);
 si0=l2;
 sj1=l9;
 i64_store(i->env__memory,(U64)si0+12U,sj1);
+fprintf(stderr, "here3\n");
 si0=l2;
 si1=l8;
 i32_store(i->env__memory,(U64)si0+8U,si1);
@@ -6155,19 +6163,25 @@ si1=l1;
 i32_store(i->env__memory,(U64)si0,si1);
 si0=l0;
 si1=l1;
+fprintf(stderr, "here4\n");
 i32_store(i->env__memory,(U64)si0+68U,si1);
 si0=l0;
 si1=l1;
 i32_store(i->env__memory,(U64)si0+72U,si1);
+fprintf(stderr, "here5\n");
 si0=l0;
 si1=l1;
 i32_store(i->env__memory,(U64)si0+64U,si1);
+fprintf(stderr, "here6\n");
 si0=l2;
 f4(i,si0);
+fprintf(stderr, "here7\n");
 si0=l2;
 f4(i,si0);
+fprintf(stderr, "here8\n");
 si0=l0;
 si1=l0;
+fprintf(stderr, "here2\n");
 si2=16U;
 si1+=si2;
 i32_store(i->env__memory,(U64)si0+84U,si1);
@@ -6212,6 +6226,7 @@ i32_store(i->env__memory,(U64)si0+92U,si1);
 si0=l0;
 si1=96U;
 si0+=si1;
+fprintf(stderr, "here");
 i->g0=si0;
 L0:;
 }
@@ -6722,7 +6737,8 @@ f31(i);
 }
 
 void cart_start(cartInstance*i){
-f33(i);
+    //fprintf(stderr,"Started cart\n");   
+    f33(i);
 }
 
 void cart_update(cartInstance*i){
