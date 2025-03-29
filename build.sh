@@ -148,6 +148,10 @@ pc-sdl2)
 	cd ../..
 	cp meson/build/wasm4-aot "$OUTPUT"
 	;;
+pico2)
+	cmake -B build
+	cmake --build build
+	;;
 *)
 	echo "Unknown platform "$PLATFORM"!"
 	exit

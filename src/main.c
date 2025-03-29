@@ -60,9 +60,9 @@ int main(int argc, char **argv) {
 #endif
 
 #ifdef BUILD_USE_W2C2
-    static cartInstance instance;   
-    cartInstantiate(&instance, NULL);
-    //init();
+    //static cartInstance instance;   
+    //cartInstantiate(&instance, NULL);
+    init();
 
     e_X5Fstart();
     e_X5Finitialize();
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 
     while (platform_update()) {
         w4_runtimeUpdate();
-        cart_update(&instance);
+        e_update();
         platform_draw();
     }
 #endif
