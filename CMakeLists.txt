@@ -67,6 +67,7 @@ target_link_libraries(WASM4-aot
 # Add the standard include files to the build
 target_include_directories(WASM4-aot PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        cart/
         src/platform/pico2/
         src/config/
         src/

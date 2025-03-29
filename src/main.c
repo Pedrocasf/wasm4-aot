@@ -6,7 +6,7 @@
 #include "platform_shim.h"
 #include "runtime.h"
 #include "wasm-cart.h"
-
+#include "cart.h"
 #ifdef BUILD_USE_WASM2C
 #include "cart.h"
 #include "wasm-rt.h"
@@ -60,7 +60,9 @@ int main(int argc, char **argv) {
 #endif
 
 #ifdef BUILD_USE_W2C2
-    init();
+    static cartInstance instance;   
+    cartInstantiate(&instance, NULL);
+    //init();
 
     e_X5Fstart();
     e_X5Finitialize();
@@ -68,7 +70,7 @@ int main(int argc, char **argv) {
 
     while (platform_update()) {
         w4_runtimeUpdate();
-        e_update();
+        cart_update(&instance);
         platform_draw();
     }
 #endif
