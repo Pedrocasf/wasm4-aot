@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "../../runtime.h"
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
@@ -42,7 +43,7 @@ uint16_t from_rgb8(uint32_t rgb){
     return (rgb & 0x1F) | ((rgb >> 3) & 0xE0) | ((rgb>>5) & 0xF800);
 }
 static bool draw_buffer = false;
-uint16_t frame_buffer[2][SCREEN_H*SCREEN_W] = {0xFFFF};
+uint16_t frame_buffer[2][SCREEN_H*SCREEN_W] = {0};
 static const uint8_t ssd1351_init_seq[] = {
         2, 1, 0xFD, 0x12,               // Unlock IC MCU interface
         2, 1, 0xFD, 0xB1,               // A2,B1,B3,BB,BE,C1
@@ -119,11 +120,14 @@ queue_t call_queue;
 void core1_hstx_fn(){
     bool local_draw_buffer = !draw_buffer;
     lcd_start_pixels();
-    for (uint16_t i = 0; i < SCREEN_H*SCREEN_W; ++i) {
-        uint16_t rgb = frame_buffer[local_draw_buffer][i];
-        lcd_put_data(rgb >> 8);
-        lcd_put_data(rgb & 0xff);
+    for (uint16_t i = 0; i < SCREEN_H; ++i) {
+        for (uint16_t j = 0; j < SCREEN_W; ++j) {
+            uint16_t rgb = frame_buffer[local_draw_buffer][(i*SCREEN_H)+j];
+            lcd_put_data(rgb >> 8);
+            lcd_put_data(rgb & 0xff);
+        }
     }
+    sleep_ms(1);
 }
 void core1_hstx(){
     while (true){
@@ -193,12 +197,19 @@ void platform_init(void){
 
     lcd_init(ssd1351_init_seq);
 
-    queue_init(&call_queue, sizeof(queue_entry_t), 2);
+    queue_init(&call_queue, sizeof(queue_entry_t), 1);
 
     multicore_launch_core1(core1_hstx);
-    queue_entry_t entry = {core1_hstx_fn};
+}
+bool platform_update(void){
+    printf("update");
+    return true;
+}
+void platform_deinit(void){
+    
 }
 void platform_draw(void) {
+    queue_entry_t entry = {core1_hstx_fn};
     uint32_t *palette = w4_memory.palette;
     uint16_t palette_conv[4] = {
         from_rgb8(palette[0]),
@@ -208,7 +219,7 @@ void platform_draw(void) {
     };
     int n = 0;
     for (int y = 0; y < SCREEN_H; y++) {
-        uint16_t *out = (uint16_t*)(frame_buffer + (SCREEN_H * y));
+        uint16_t *out = &frame_buffer[draw_buffer][y*SCREEN_H];
         for (int x = 0; x < SCREEN_W; x+=4, n++) {
             uint8_t quartet = w4_memory.framebuffer[n];
             int color1 = (quartet & 0b00000011) >> 0;
@@ -216,12 +227,21 @@ void platform_draw(void) {
             int color3 = (quartet & 0b00110000) >> 4;
             int color4 = (quartet & 0b11000000) >> 6;
 
-            *out++ = palette_conv[color1];
-            *out++ = palette_conv[color2];
-            *out++ = palette_conv[color3];
-            *out++ = palette_conv[color4];
+            frame_buffer[draw_buffer][(y*SCREEN_H)+x] = palette_conv[color1];
+            frame_buffer[draw_buffer][(y*SCREEN_H)+x+1] = palette_conv[color2];
+            frame_buffer[draw_buffer][(y*SCREEN_H)+x+2] = palette_conv[color3];
+            frame_buffer[draw_buffer][(y*SCREEN_H)+x+3] = palette_conv[color4];
+            if (n > 5120)
+                break;
+            if ((n%40)> 32)
+                break;
         }
-    }
+        n+=8;
+        if (n > 5120)
+            break;
+    } 
+    draw_buffer = !draw_buffer;
+    queue_add_blocking(&call_queue, &entry);
 }
 void* platform_init_alloc(uint32_t len){
     return malloc(len);
