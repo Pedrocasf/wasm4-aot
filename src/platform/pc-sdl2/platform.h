@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #define PLATFORM_APU_SAMPLE_RATE 44100
-#define PLATFORM_HAS_DISK 1
+#define PLATFORM_HAS_DISK 0
 
 void platform_init(void);
 bool platform_update(void);

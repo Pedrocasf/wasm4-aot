@@ -202,7 +202,7 @@ void platform_init(void){
     multicore_launch_core1(core1_hstx);
 }
 bool platform_update(void){
-    printf("update");
+    fprintf(stderr, "update\n");
     return true;
 }
 void platform_deinit(void){

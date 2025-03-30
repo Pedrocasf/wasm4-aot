@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 #include "framebuffer.h"
 #include "platform_shim.h"
 #include "runtime.h"
@@ -125,6 +126,7 @@ int w4_runtimeDiskr (uint8_t* dest, int size) {
     memcpy(dest, disk.data, size);
     return size;
 #else
+    //fprintf(stderr, "w4_runtimeDiskr");
     return 0;
 #endif
 }

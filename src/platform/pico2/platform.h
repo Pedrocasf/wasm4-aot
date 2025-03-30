@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-//#define PLATFORM_HAS_DISK 1
+#define PLATFORM_HAS_DISK 0
 //#define PLATFORM_HAS_DRAW_PARTIAL 1
 #define PLATFORM_HAS_INIT_ALLOC 0
 
