@@ -9,7 +9,7 @@
 #include "cart.h"
 #include "util.h"
 #ifdef BUILD_USE_W2C2
-
+    static cartInstance instance; 
     extern wasmMemory (*env__memory);
 #endif
 #ifdef BUILD_USE_WASM2C
@@ -71,8 +71,8 @@ int main(int argc, char **argv) {
 #endif
 
 #ifdef BUILD_USE_W2C2
-    cartInstance instance;   
-    cartInstantiate(&instance, NULL);
+      
+    cartInstantiate(&instance, resolveImport);
     //instance.env__memory = env__memory;
     fprintf(stderr,"Instantiated cart\n");
     fprintf(stderr, "%x\n", instance.g0);
@@ -85,9 +85,8 @@ int main(int argc, char **argv) {
     //e_X5Fstart();
     //e_X5Finitialize();
     //e_start();
-
+    fprintf(stderr, "instance.mem %xp\n", instance.env__memory);
     while (platform_update()) {
-        fprintf(stderr, "log\n");
         w4_runtimeUpdate();
         //e_update();
         cart_update(&instance);
