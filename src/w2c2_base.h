@@ -665,7 +665,7 @@ wasmThreadCreate(
 }
 
 #endif
-
+#pragma pack(push, 1)
 typedef struct wasmMemory {
     U8* data;
     U32 size;
@@ -678,6 +678,7 @@ typedef struct wasmMemory {
     WASM_MUTEX_TYPE mutex;
 #endif
 } wasmMemory;
+#pragma pack(pop)
 extern U8* w4_memory_raw;
 #define WASM_PAGE_SIZE 65536
 

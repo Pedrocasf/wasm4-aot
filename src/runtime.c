@@ -29,7 +29,7 @@ void w4_runtimeInit(void) {
     w4_memory.drawColors[1] = 0x12;
     w4_write16LE(&w4_memory.mouseX, 0x7fff);
     w4_write16LE(&w4_memory.mouseY, 0x7fff);
-
+    fprintf(stderr, "memory %p\n", (void*)w4_memory.padding);
 #ifdef PLATFORM_HAS_APU
     w4_apuInit();
 #endif

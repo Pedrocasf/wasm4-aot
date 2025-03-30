@@ -19,9 +19,9 @@
 #define W4_HEIGHT 160
 
 #define W4_SYSTEM_PRESERVE_FRAMEBUFFER 0x01
-
+#pragma pack(push, 1)
 typedef struct {
-    uint8_t _padding[4];
+    uint8_t padding[4];
     uint32_t palette[4];
     uint8_t drawColors[2];
     uint8_t gamepads[4];
@@ -33,7 +33,7 @@ typedef struct {
     uint8_t framebuffer[W4_WIDTH*W4_HEIGHT>>2];
     uint8_t _user[58976];
 } w4_Memory;
-
+#pragma pack(pop)
 typedef struct {
     uint16_t size;
     uint8_t data[1024];

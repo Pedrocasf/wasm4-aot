@@ -4,7 +4,6 @@
 #include "stdlib.h"
 #include "platform_shim.h"
 #include "wasm-cart.h"
-#include "cart.h"
 
 typedef unsigned int u32;
 uint8_t *w4_memory_raw = (uint8_t*) &w4_memory;
@@ -35,9 +34,14 @@ void Z_cartZ__initialize(struct Z_env_instance_t *env) {
 static wasmMemory wasm_shim_memory = {
     (uint8_t*) &w4_memory, 1, 1, 65536
 };
-wasmMemory *env__memory = &wasm_shim_memory;
+wasmMemory *m_env__memory = &wasm_shim_memory;
+
 
 static void e_dummy(void) {
+
+}
+
+static void start_dummy(void*i){
 
 }
 
@@ -46,7 +50,7 @@ void trap(Trap t) {
 }
 
 // Some WASM-4 cartridges don't come with e_start.
-void (*e_start)(void) __attribute__((weak)) = e_dummy;
+void (*cart_start)(void* i) __attribute__((weak)) = start_dummy;
 void (*e_X5Fstart)(void) __attribute__((weak)) = e_dummy;
 void (*e_X5Finitialize)(void) __attribute__((weak)) = e_dummy;
 //void (*e_update)(void) __attribute__((weak)) = e_dummy;
