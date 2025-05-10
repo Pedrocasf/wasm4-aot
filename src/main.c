@@ -76,6 +76,7 @@ int main(int argc, char **argv) {
     fprintf(stderr,"Instantiated cart\n");
     fprintf(stderr, "%x\n", instance.g0);
     cart_start(&instance);
+    //cart__start(&instance);
     fprintf(stderr,"Started cart\n");   
     fprintf(stderr, "instance.mem %p\n", (void*)instance.env__memory->data);
     fprintf(stderr, "w4 memory %p\n", (void*)w4_memory.padding);

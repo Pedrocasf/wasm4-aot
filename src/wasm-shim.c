@@ -51,6 +51,7 @@ void trap(Trap t) {
 
 // Some WASM-4 cartridges don't come with e_start.
 void (*cart_start)(void* i) __attribute__((weak)) = start_dummy;
+void (*cart__start)(void* i) __attribute__((weak)) = start_dummy;
 void (*e_X5Fstart)(void) __attribute__((weak)) = e_dummy;
 void (*e_X5Finitialize)(void) __attribute__((weak)) = e_dummy;
 //void (*e_update)(void) __attribute__((weak)) = e_dummy;

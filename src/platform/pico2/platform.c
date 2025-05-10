@@ -15,28 +15,11 @@
 #include "hardware/structs/hstx_fifo.h"
 #define SYS_CLK	315000
 // These can be any permutation of HSTX-capable pins:
-#define PIN_DIN   12
-#define PIN_SCK   13
-#define PIN_CS    14
-#define PIN_DC    15
-// These can be any pin:
-#define PIN_RESET 16
-//#define PIN_BL    17
 
-#define FIRST_HSTX_PIN 12
-#if   PIN_DIN < FIRST_HSTX_PIN || PIN_DIN >= FIRST_HSTX_PIN + 8
-#error "Must be an HSTX-capable pin: DIN"
-#elif PIN_SCK < FIRST_HSTX_PIN || PIN_SCK >= FIRST_HSTX_PIN + 8
-#error "Must be an HSTX-capable pin: SCK"
-#elif PIN_CS  < FIRST_HSTX_PIN || PIN_CS  >= FIRST_HSTX_PIN + 8
-#error "Must be an HSTX-capable pin: CS"
-#elif PIN_DC  < FIRST_HSTX_PIN || PIN_DC  >= FIRST_HSTX_PIN + 8
-#error "Must be an HSTX-capable pin: DC"
-#endif
 // Format: cmd length (including cmd byte), post delay in units of 5 ms, then cmd payload
 // Note the delays have been shortened a little
-#define SCREEN_W 128
-#define SCREEN_H 128
+#define SCREEN_W 160
+#define SCREEN_H 160
 #define COLOR_ORDER 0
 w4_Memory w4_memory;
 uint16_t from_rgb8(uint32_t rgb){
@@ -44,73 +27,7 @@ uint16_t from_rgb8(uint32_t rgb){
 }
 static bool draw_buffer = false;
 uint16_t frame_buffer[2][SCREEN_H*SCREEN_W] = {0};
-static const uint8_t ssd1351_init_seq[] = {
-        2, 1, 0xFD, 0x12,               // Unlock IC MCU interface
-        2, 1, 0xFD, 0xB1,               // A2,B1,B3,BB,BE,C1
-        1, 1, 0xAE,                     // Display off
-        4, 1, 0xB2, 0xA4, 0x00, 0x00,   // DISPLAY_ENHANCEMENT
-        2, 1, 0xB3, 0xF1,               // Clock divider F1 or F0
-        2, 1, 0xCA, 0x7F,               // Mux Ratio
-        2, 1, 0xA0, 0x74,               // Segment remapping
-        2, 1, 0xA1, 0x00,               // Set display start line
-        2, 1, 0xA2, 0x00,               // Set display offset
-        2, 1, 0xB5, 0x00,               // Set GPIO
-        2, 1, 0xAB, 0x01,               // Function Select
-        2, 1, 0xB1, 0x32,               // Precharge 
-        2, 1, 0xBB, 0x1F,               // Precharge Level
-        2, 1, 0xBE, 0x05,               // Set VcomH Charge
-        1, 1, 0xA6,                     // Normal Display
-        2, 1, 0xC7, 0x0A,               // Contrast Master
-        4, 1, 0xC1, 0xFF, 0xFF, 0xFF,   // Constrast RGB
-        4, 1, 0xB4, 0xA0, 0xB5, 0x55,   // Set segment low voltage
-        2, 1, 0xB6, 0x01,               // Precharge 2
-        1, 1, 0xA6,
-        1, 1, 0xAF,                     // Display ON
-};
-static inline void hstx_put_word(uint32_t data) {
-	while (hstx_fifo_hw->stat & HSTX_FIFO_STAT_FULL_BITS)
-		;
-	hstx_fifo_hw->fifo = data;
-}
 
-static inline void lcd_put_dc_cs_data(bool dc, bool csn, uint8_t data) {
-	hstx_put_word(
-		(uint32_t)data |
-		(csn ? 0x0ff00000u : 0x00000000u) |
-		// Note DC gets inverted inside of HSTX:
-		(dc  ? 0x00000000u : 0x0003fc00u)
-	);
-}
-
-static inline void lcd_start_cmd(uint8_t cmd) {
-	lcd_put_dc_cs_data(false, true, 0);
-	lcd_put_dc_cs_data(false, false, cmd);
-}
-static inline void lcd_put_data(uint32_t data) {
-	lcd_put_dc_cs_data(true, false, data);
-}
-static inline void lcd_write_cmd(const uint8_t *cmd, size_t count) {
-    lcd_start_cmd(*cmd++);
-    if (count >= 2) {
-        for (size_t i = 0; i < count - 1; ++i) {
-            lcd_put_data(*cmd++);
-        }
-    }
-}
-
-static inline void lcd_start_pixels(void) {
-    uint8_t cmd = 0x5C; // RAMWR
-    lcd_write_cmd(&cmd, 1);
-}
-static inline void lcd_init(const uint8_t *init_seq) {
-    const uint8_t *cmd = init_seq;
-    while (*cmd) {
-        lcd_write_cmd(cmd + 2, *cmd);
-        sleep_ms(*(cmd + 1) * 5);
-        cmd += *cmd + 2;
-    }
-    
-}
 typedef struct
 {
     void (*func)();
