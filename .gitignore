@@ -2,4 +2,9 @@ build
 w2c2
 .vscode
 cart
+carts
+cmake-build-debug
+.idea
+meson
+*:Zone.Identifier
 
