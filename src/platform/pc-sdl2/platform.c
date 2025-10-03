@@ -7,6 +7,8 @@
 
 w4_Memory w4_memory;
 
+
+
 static SDL_Window *window;
 static SDL_Surface *surface;
 static uint8_t held_keys;
@@ -62,9 +64,9 @@ bool platform_update(void) {
 void platform_draw(void) {
     surface = SDL_GetWindowSurface(window);
     uint32_t *palette = w4_memory.palette;
-
     SDL_LockSurface(surface);
     int n = 0;
+    //fprintf(stderr,"got surface\n");
     for (int y = 0; y < 160; y++) {
         uint32_t *out = surface->pixels + (surface->pitch * y);
         for (int x = 0; x < 160; x+=4, n++) {

@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-
+#include <stdio.h>
 #define WIDTH 160
 #define HEIGHT 160
 

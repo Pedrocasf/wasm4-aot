@@ -7,7 +7,7 @@
 
 typedef unsigned int u32;
 uint8_t *w4_memory_raw = (uint8_t*) &w4_memory;
-
+/*
 #ifdef BUILD_USE_WASM2C
 #include "wasm-rt-impl.c"
 #include "wasm-rt-std.c"
@@ -29,12 +29,12 @@ void Z_cartZ__initialize(struct Z_env_instance_t *env) {
 
 }
 #endif
-
+*/
 #ifdef BUILD_USE_W2C2
 static wasmMemory wasm_shim_memory = {
     (uint8_t*) &w4_memory, 1, 1, 65536
 };
-wasmMemory *m_env__memory = &wasm_shim_memory;
+wasmMemory *m_env_memory = &wasm_shim_memory;
 
 
 static void e_dummy(void) {
@@ -56,11 +56,11 @@ void (*e_X5Finitialize)(void) __attribute__((weak)) = e_dummy;
 //void (*e_update)(void) __attribute__((weak)) = e_dummy;
 #endif
 
-#define AS_NATIVE_PTR(x) (((uint8_t*) &w4_memory) + (x))
+#define AS_NATIVE_PTR(x) (((uint8_t*) w4_memory_raw) + (x))
 
 // wasm2c format: Z_envZ_x
 // w2c2 format: env__x
-
+/*
 #ifdef BUILD_USE_WASM2C
 // void w4_runtimeBlit (const uint8_t* sprite, int x, int y, int width, int height, int flags);
 void Z_envZ_blit(struct Z_env_instance_t* env, u32 sprite, u32 x, u32 y, u32 width, u32 height, u32 flags) {
@@ -147,10 +147,12 @@ void Z_envZ_tracef(struct Z_env_instance_t* env, u32 str, u32 stack) {
     w4_runtimeTracef(AS_NATIVE_PTR(str), AS_NATIVE_PTR(stack));
 }
 #endif
-
+*/
 #ifdef BUILD_USE_W2C2
 // void w4_runtimeBlit (const uint8_t* sprite, int x, int y, int width, int height, int flags);
 void env__blit(void* i, u32 sprite, u32 x, u32 y, u32 width, u32 height, u32 flags) {
+    printf("spr:%x\n", sprite);
+    printf("ptr:%x\n", AS_NATIVE_PTR(0));
     w4_runtimeBlit(AS_NATIVE_PTR(sprite), x, y, width, height, flags);
 }
 
@@ -186,6 +188,8 @@ void env__rect(void* i, u32 x, u32 y, u32 width, u32 height) {
 
 // void w4_runtimeText (const uint8_t* str, int x, int y);
 void env__text(void* i, u32 str, u32 x, u32 y) {
+    printf("%x\n", str);
+    printf("%s\n" ,AS_NATIVE_PTR(str));
     w4_runtimeText(AS_NATIVE_PTR(str), x, y);
 }
 

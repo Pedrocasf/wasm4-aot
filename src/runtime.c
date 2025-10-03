@@ -14,7 +14,6 @@
 
 // TODO: SRAM handling
 w4_Disk w4_disk;
-
 #define memory w4_memory
 #define disk w4_disk
 
@@ -29,7 +28,7 @@ void w4_runtimeInit(void) {
     w4_memory.drawColors[1] = 0x12;
     w4_write16LE(&w4_memory.mouseX, 0x7fff);
     w4_write16LE(&w4_memory.mouseY, 0x7fff);
-    fprintf(stderr, "memory %p\n", (void*)w4_memory.padding);
+    printf("memory %p\n", &memory);
 #ifdef PLATFORM_HAS_APU
     w4_apuInit();
 #endif

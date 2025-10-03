@@ -36,7 +36,7 @@ pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(WASM4-aot
-    cart/cart.c
+    carts/cart.c
     src/framebuffer.cpp
     src/main.c
     src/runtime.c

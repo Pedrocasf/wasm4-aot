@@ -520,6 +520,7 @@ void w4_framebufferText (const uint8_t* str, int x, int y) {
             y += 8;
             currentX = x;
         } else {
+            fprintf(stderr, "w4 fb text\n");
             w4_framebufferBlit(font, currentX, y, 8, 8, 0, (*str - 32) << 3, 8,
                 false, false, false, false);
             currentX += 8;

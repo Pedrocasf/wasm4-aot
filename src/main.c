@@ -6,12 +6,15 @@
 #include "platform_shim.h"
 #include "runtime.h"
 #include "wasm-cart.h"
-#include "cart.h"
+#include "../carts/cart.h"
 #include "util.h"
+
 #ifdef BUILD_USE_W2C2
     static cartInstance instance;
-    extern wasmMemory (*m_env__memory);
+    extern wasmMemory *m_env_memory;
 #endif
+
+/*
 #ifdef BUILD_USE_WASM2C
 #include "cart.h"
 #include "wasm-rt.h"
@@ -29,10 +32,11 @@ wasm_rt_memory_t* Z_envZ_memory(struct Z_env_instance_t*) {
     return &wasm_shim_memory;
 }
 #endif
+*/
 void* resolveImport(const char* moduleName, const char* importName) {
-    if (strcmp(moduleName, "env") == 0 && strcmp(importName, "memory") == 0) {
-        fprintf(stderr, "solved mem import %p\n", (void*)m_env__memory->data);
-        return &(m_env__memory->data);
+    if (strcmp(moduleName, "env") == 0 && strcmp(importName, "memory") == 0) { 
+        //printf( "solved mem import %p\n", (void*)m_env_memory);
+        return (void*)m_env_memory;
     }
     return NULL;
 }
@@ -40,7 +44,7 @@ int main(int argc, char **argv) {
     platform_init();
 
     w4_runtimeInit();
-
+/*
 #ifdef BUILD_USE_WASM2C
     wasm_rt_init();
 
@@ -69,20 +73,24 @@ int main(int argc, char **argv) {
 
     wasm_rt_free();
 #endif
-
+*/
 #ifdef BUILD_USE_W2C2
-      
     cartInstantiate(&instance, resolveImport);
-    fprintf(stderr,"Instantiated cart\n");
-    fprintf(stderr, "%x\n", instance.g0);
-    cart_start(&instance);
-    fprintf(stderr,"Started cart\n");   
-    fprintf(stderr, "instance.mem %p\n", (void*)instance.env__memory->data);
-    fprintf(stderr, "w4 memory %p\n", (void*)w4_memory.padding);
+    //instance.env__memory = &w4_memory;
+    printf("Instantiated cart\n");
+    printf( "%x\n", instance.g0);
+    //cart_start(&instance);
+    printf("Started cart\n");   
+    printf( "instance.mem %p\n", instance.env__memory->data);
+    printf( "w4 memory %p\n", m_env_memory->data);
     while (platform_update()) {
+        //printf( "paltform update\n");
         w4_runtimeUpdate();
+        //printf( "runtime update\n");
         cart_update(&instance);
+        //printf( "cart update\n");
         platform_draw();
+        //printf( "paltform draw\n");
     }
 #endif
 
