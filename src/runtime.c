@@ -28,7 +28,7 @@ void w4_runtimeInit(void) {
     w4_memory.drawColors[1] = 0x12;
     w4_write16LE(&w4_memory.mouseX, 0x7fff);
     w4_write16LE(&w4_memory.mouseY, 0x7fff);
-    printf("memory %p\n", &memory);
+    //printf("memory %p\n", &memory);
 #ifdef PLATFORM_HAS_APU
     w4_apuInit();
 #endif
@@ -111,7 +111,7 @@ void w4_runtimeTextUtf16 (const uint16_t* str, int byteLength, int x, int y) {
 }
 
 void w4_runtimeTone (int frequency, int duration, int volume, int flags) {
-    debug_printf("tone: %d, %d, %d, %d\n", frequency, duration, volume, flags);
+    //debug_printf("tone: %d, %d, %d, %d\n", frequency, duration, volume, flags);
 #ifdef PLATFORM_HAS_APU
     w4_apuTone(frequency, duration, volume, flags);
 #endif

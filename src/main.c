@@ -35,7 +35,7 @@ wasm_rt_memory_t* Z_envZ_memory(struct Z_env_instance_t*) {
 */
 void* resolveImport(const char* moduleName, const char* importName) {
     if (strcmp(moduleName, "env") == 0 && strcmp(importName, "memory") == 0) { 
-        //printf( "solved mem import %p\n", (void*)m_env_memory);
+        printf( "solved mem import %p\n", (void*)m_env_memory->data);
         return (void*)m_env_memory;
     }
     return NULL;
@@ -76,14 +76,13 @@ int main(int argc, char **argv) {
 */
 #ifdef BUILD_USE_W2C2
     cartInstantiate(&instance, resolveImport);
-    cartInitMemories(&instance, NULL);
     //instance.env__memory = &w4_memory;
-    printf("Instantiated cart\n");
-    printf( "%x\n", instance.g0);
-    //cart_start(&instance);
-    printf("Started cart\n");   
-    printf("instance.mem %p\n", instance.env__memory->data);
-    printf("w4 memory %p\n", m_env_memory->data);
+    //printf("Instantiated cart\n");
+    //printf( "%x\n", instance.g0);
+    cart_start(&instance);
+    //printf("Started cart\n");   
+    //printf("instance.mem %p\n", instance.env__memory->data);
+    //printf("w4 memory %p\n", m_env_memory->data);
     while (platform_update()) {
         //printf( "paltform update\n");
         w4_runtimeUpdate();

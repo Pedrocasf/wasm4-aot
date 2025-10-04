@@ -151,8 +151,8 @@ void Z_envZ_tracef(struct Z_env_instance_t* env, u32 str, u32 stack) {
 #ifdef BUILD_USE_W2C2
 // void w4_runtimeBlit (const uint8_t* sprite, int x, int y, int width, int height, int flags);
 void env__blit(void* i, u32 sprite, u32 x, u32 y, u32 width, u32 height, u32 flags) {
-    printf("spr:%x\n", sprite);
-    printf("ptr:%x\n", AS_NATIVE_PTR(0));
+    //printf("spr:%x\n", sprite);
+    //printf("ptr:%x\n", AS_NATIVE_PTR(0));
     w4_runtimeBlit(AS_NATIVE_PTR(sprite), x, y, width, height, flags);
 }
 
@@ -188,8 +188,8 @@ void env__rect(void* i, u32 x, u32 y, u32 width, u32 height) {
 
 // void w4_runtimeText (const uint8_t* str, int x, int y);
 void env__text(void* i, u32 str, u32 x, u32 y) {
-    printf("%x\n", str);
-    printf("%s\n" ,AS_NATIVE_PTR(str));
+    //printf("%x\n", str);
+    //printf("%s\n" ,AS_NATIVE_PTR(str));
     w4_runtimeText(AS_NATIVE_PTR(str), x, y);
 }
 
