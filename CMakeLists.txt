@@ -23,11 +23,14 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico2 CACHE STRING "Board type")
+set(PICO_PLATFORM rp2350)
+set(PICO_BOARD vgaboard CACHE STRING "Board type")
+set(PICO_SDK_FETCH_FROM_GIT 1)
+set(PICO_EXTRAS_FETCH_FROM_GIT 1)
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
-
+include(pico_extras_import.cmake)
 project(WASM4-aot C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
@@ -36,13 +39,13 @@ pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 
 add_executable(WASM4-aot
-    carts/cart.c
+    cart/cart.c
     src/framebuffer.cpp
     src/main.c
     src/runtime.c
     src/util.c
     src/wasm-shim.c
-    src/platform/pico2/platform.c
+    src/platform/pico2-vga/platform.c
 )
 
 
@@ -55,6 +58,12 @@ pico_set_program_version(WASM4-aot "0.1")
 # Modify the below lines to enable/disable output over UART/USB
 #pico_enable_stdio_uart(WASM4-aot 1)
 pico_enable_stdio_usb(WASM4-aot 1)
+pico_enable_stdio_uart(WASM4-aot 1)
+
+target_compile_definitions(WASM4-aot PRIVATE
+            #PICO_SCANVIDEO_PLANE1_VARIABLE_FRAGMENT_DMA=1
+            #TURBO_BOOST=1
+            )
 
 # Add the standard library to the build
 target_link_libraries(WASM4-aot
@@ -62,13 +71,14 @@ target_link_libraries(WASM4-aot
         pico_stdlib
         pico_sync
         pico_malloc
+        pico_scanvideo_dpi
 )
 
 # Add the standard include files to the build
 target_include_directories(WASM4-aot PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         cart/
-        src/platform/pico2/
+        src/platform/pico2-vga/
         src/config/
         src/
 )
