@@ -23,7 +23,10 @@
 #define SCREEN_H 160
 w4_Memory w4_memory;
 uint16_t from_rgb8(uint32_t rgb){
-    return (rgb & 0x1F) | ((rgb >> 3) & 0x3E0) | ((rgb>>6) & 0x7C00);
+    uint16_t b5 = (rgb & 0x00F80000) >> 19;
+    uint16_t g6 = (rgb & 0x0000FC00) >> 10;
+    uint16_t r5 = (rgb & 0x000000F8) >> 3;
+    return (r5 << 11) | (g6 << 5) | b5;
 }
 static bool draw_buffer = false;
 uint16_t fb[SCREEN_H*SCREEN_W] = {0};
@@ -64,7 +67,7 @@ void core1_draw(void) {
             struct scanvideo_scanline_buffer *buffer = scanvideo_begin_scanline_generation(true);
             uint16_t *p = (uint16_t *) buffer->data;
             *p++ = COMPOSABLE_RAW_RUN;
-            *p++ = fb[y* SCREEN_W];
+            *p++ = fb[y * SCREEN_W];
             *p++ = SCREEN_W;
             for (int x = 0; x < SCREEN_W; x+=4, n++) {
                 uint8_t quartet = w4_memory.framebuffer[n];
@@ -85,9 +88,9 @@ void core1_draw(void) {
             /*for (size_t i = SCREEN_W; i < vga_mode.width; i++){
                 *p++ = 0;
             }*/
-            p[SCREEN_W+3]  = COMPOSABLE_EOL_SKIP_ALIGN;
-            p[SCREEN_W+4]  = 0;
-            buffer->data_used = (vga_mode.width + 6)>>1;
+            p[SCREEN_W+3] = COMPOSABLE_EOL_SKIP_ALIGN;
+            p[SCREEN_W+4] = 0;
+            buffer->data_used = (SCREEN_W + 6)>>1;
             buffer->status = SCANLINE_OK;
             scanvideo_end_scanline_generation(buffer);
             //n+=8;
