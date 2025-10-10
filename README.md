@@ -46,3 +46,7 @@ The engine as a whole is licensed under the terms of the MIT license. The indivi
 Note that if using the wasm2c frontend instead of the w2c2 frontend, additional code is linked in which is licensed under the terms of Apache License 2.0.
 
 Note that homebrew toolchains statically link libraries of their own, which may be under distinct terms from the ones provided on the engine.
+
+
+## Addendum 
+For this to work, after generating the cart.c you need to put cartInitMemories(i, NULL); as the last line of teh void cartInstantiate method.
